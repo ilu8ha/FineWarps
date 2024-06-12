@@ -1,0 +1,16 @@
+[
+{
+  "modid": "fmutils",
+  "name": "Finemine Utils",
+  "description": "A few utils for our servers",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["ilu8ha"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

@@ -1,0 +1,72 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven { url = "http://files.minecraftforge.net/maven" }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+    }
+}
+plugins {
+    id 'com.github.johnrengelman.shadow' version '4.0.2'
+}
+
+apply plugin: 'net.minecraftforge.gradle.forge'
+
+
+version = "1"
+group= "com.ilu8ha.warps"
+archivesBaseName = "FMWarp"
+
+sourceCompatibility = targetCompatibility = "1.8"
+compileJava {
+    sourceCompatibility = targetCompatibility = "1.8"
+}
+
+minecraft {
+    version = "1.12.2-14.23.5.2836"
+    runDir = "run"
+    mappings = "stable_39"
+	//mappings = "snapshot_20170624"
+    makeObfSourceJar = false
+}
+
+repositories {
+    mavenCentral();
+}
+
+dependencies {
+    shadow ('commons-cli:commons-cli:1.8.0')
+	compile fileTree(dir:'lib', include: '*.jar')
+}
+
+processResources
+{
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+        expand 'version':project.version, 'mcversion':project.minecraft.version
+    }
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
+shadowJar {
+    classifier ''
+    configurations = [project.configurations.shadow]
+        //include(dependency('commons-cli:commons-cli:1.8.0'))
+    relocate 'org.apache.commons.cli', 'com.ilu8ha.warps.org.apache.commons.cli'
+}
+
+
+reobf {
+    shadowJar {} // Reobfuscate the shadowed JAR
+}
+
+artifacts {
+    archives shadowJar
+}
+
+tasks.build.dependsOn reobfShadowJar
+jar.finalizedBy('reobfShadowJar')
