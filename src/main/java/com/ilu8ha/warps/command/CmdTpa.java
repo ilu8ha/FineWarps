@@ -1,6 +1,6 @@
 package com.ilu8ha.warps.command;
 
-import cofh.core.util.helpers.EntityHelper;
+import com.ilu8ha.warps.cofh.core.util.helpers.EntityHelper;
 import com.ilu8ha.warps.FineWarps;
 import com.ilu8ha.warps.TeleportRequest;
 import com.ilu8ha.warps.config.ConfigHandler;
@@ -168,6 +168,7 @@ public class CmdTpa extends CmdBase implements ICommand {
             throw new CommandException("You already have an active request");
         }
         if(!hasPermission(player, Permissions.teleportRequestSend)) throw new CommandException("You can't send teleportation requests");
+
         if(ConfigHandler.isTpaCooldownSystemEnabled
                 && (!hasPermission(player, Permissions.operator) && FineWarps.cooldownTpaUse.containsKey(player.getUniqueID().toString()))){
             int timer = FineWarps.cooldownTpaUse.get(player.getUniqueID().toString()) / 20;

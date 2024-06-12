@@ -1,6 +1,6 @@
 package com.ilu8ha.warps.command;
 
-import cofh.core.util.helpers.EntityHelper;
+import com.ilu8ha.warps.cofh.core.util.helpers.EntityHelper;
 import com.ilu8ha.warps.DataFileManager;
 import com.ilu8ha.warps.FineWarps;
 import com.ilu8ha.warps.Warp;
