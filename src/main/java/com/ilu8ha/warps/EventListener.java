@@ -1,11 +1,8 @@
 package com.ilu8ha.warps;
 
 import com.ilu8ha.warps.config.ConfigHandler;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
@@ -88,10 +85,8 @@ public class EventListener {
                     .filter(i->(i.getPlayerAcceptor().equals(event.player))
                             || (i.getPlayerRequester().equals(event.player)))
                     .collect(Collectors.toList());
-            Iterator<TeleportRequest> iterator = FineWarps.teleportRequests.iterator();
-            while (iterator.hasNext()){
-                TeleportRequest tr = iterator.next();
-                iterator.remove();
+            if(!requests.isEmpty()){
+                FineWarps.teleportRequests.removeAll(requests);
             }
         }
     }
