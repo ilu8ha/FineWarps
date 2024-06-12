@@ -1,14 +1,14 @@
 [
 {
-  "modid": "fmutils",
-  "name": "Finemine Utils",
-  "description": "A few utils for our servers",
+  "modid": "fmwarps",
+  "name": "FineWarps",
+  "description": "Warps, teleport requests and home points",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
   "authorList": ["ilu8ha"],
-  "credits": "",
+  "credits": "CoFH team for entityHelper",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []
