@@ -86,6 +86,7 @@ public class EventListener {
                             || (i.getPlayerRequester().equals(event.player)))
                     .collect(Collectors.toList());
             if(!requests.isEmpty()){
+                requests.forEach(tr->tr.canceled(event.player));
                 FineWarps.teleportRequests.removeAll(requests);
             }
         }
