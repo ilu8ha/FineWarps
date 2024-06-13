@@ -10,8 +10,8 @@ import java.util.*;
 
 
 public class DataFileManager {
-    private static final File dataHomePath = new File(DimensionManager.getWorld(0).getSaveHandler().getWorldDirectory().getPath() + "/playerdata/FMWarpsData");
-    private static final File warpsDataFile = new File(dataHomePath.getPath() + "/FMWarps.json" );
+    private static final File dataHomePath = new File(DimensionManager.getWorld(0).getSaveHandler().getWorldDirectory().getPath() + "/FineWarps");
+    private static final File warpsDataFile = new File(dataHomePath.getPath() + "/warpList.json" );
     private static final File visitedDimensionDataPath = new File(dataHomePath.getPath() + "/VisitedDimension" );
     private static final File userNameCacheDataFile = new File(dataHomePath.getPath() + "/userNameCache.json");
     public static boolean loadWarpsDataFromFile(){

@@ -80,7 +80,7 @@ public class ConfigHandler {
         isTpaCooldownSystemEnabled = config.getBoolean("isTpaCooldownSystemEnabled", category,false,"Enable/disable tpa cooldown");
         teleportRequestLifetime = config.getInt("teleportRequestLifetime",category, 1200,0,6000,"TeleportRequest lifetime in tick");
         canTpaToBlacklistedDimension = config.getBoolean("canTeleportToBlacklistedDimension", category, false, "Can telepot to player if he is in blacklisted dimension");
-        tpaSafetyCheck = config.getBoolean("tpaSafetyCheck", category, true, "Find safety position (if they not) to teleport if possible or cancel teleportation");
+        tpaSafetyCheck = config.getBoolean("tpaSafetyCheck", category, true, "Teleportation is possible only then target player stay on ground");
 
         category = "TpaCooldown";
         config.addCustomCategoryComment(category,"Tpa cooldown in tick per player status");

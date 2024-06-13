@@ -36,6 +36,9 @@ public class CmdWarp extends CmdBase implements ICommand {
         Warp warp;
         EntityPlayer playerSender;
         switch (args.length){
+            case (0):
+                sendHelpResult(sender);
+                return;
             case (1):
                 if(args[0].equals("help")){
                     sendHelpResult(sender);
