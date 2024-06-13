@@ -17,7 +17,9 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -48,14 +50,12 @@ public class CmdTpa extends CmdBase implements ICommand {
                             return;
                     }
                 case (2):
-                    switch (args[1]){
-                        case ("here"):
-                            createNewTeleportationRequest(playerSender, args[0], false);
-                            return;
-                        default:
-                            sendSyntaxErrorResult(sender);
-                            return;
+                    if(args[1].equals("here")){
+                        createNewTeleportationRequest(playerSender, args[0], false);
+                        return;
                     }
+                    sendSyntaxErrorResult(sender);
+                    return;
                 default:
                     sendSyntaxErrorResult(sender);
             }
@@ -141,54 +141,28 @@ public class CmdTpa extends CmdBase implements ICommand {
                 && !hasPermission(request.getAffectedPlayer(), Permissions.operator))){
             throw new TpaException(String.format("You need visit dimension DIM%d first", request.getTargetPlayer().dimension), request.getAffectedPlayer(), request);
         }
+        if(ConfigHandler.tpaSafetyCheck){
+            if(request.isToAcceptor()){
+                if(!hasPermission(request.getPlayerAcceptor(), Permissions.operator) && !request.getPlayerAcceptor().onGround){
+                    throw new TpaException("You must stay on ground", request.getPlayerAcceptor(), null);
+                }
+            }else {
+                if(!hasPermission(request.getPlayerRequester(), Permissions.operator) && !request.getPlayerRequester().onGround){
+                    throw new TpaException("You must stay on ground", request.getPlayerRequester(), request);
+                }
+            }
+        }
     }
-    private void teleport(TeleportRequest request) throws TpaException{
+    private void teleport(TeleportRequest request) {
         EntityPlayer targetPlayer = request.getTargetPlayer();
         EntityPlayer affectedPlayer = request.getAffectedPlayer();
-        BlockPos targetPos = targetPlayer.getPosition();
-        if(ConfigHandler.tpaSafetyCheck && !hasPermission(affectedPlayer, Permissions.operator)){
-            //targetPos = getSafelyPositionIfPossibleOrGetNull(targetPlayer.world, targetPos);
-
-        }
-        //if(targetPos == null) throw new TpaException("Target position is unsafe", request);
         if(affectedPlayer.dimension != targetPlayer.dimension){
             EntityHelper.transferPlayerToDimension((EntityPlayerMP)affectedPlayer, targetPlayer.dimension,((EntityPlayerMP) affectedPlayer).server.getPlayerList());
         }
-        affectedPlayer.setPositionAndUpdate(targetPos.getX() +0.5D, targetPos.getY()+0.5D, targetPos.getZ()+0.5D);
+        affectedPlayer.fallDistance = 0;
+        affectedPlayer.setPositionAndUpdate(targetPlayer.posX, targetPlayer.posY, targetPlayer.posZ);
     }
-//    private BlockPos getSafelyPositionIfPossibleOrGetNull(World targetWorld, BlockPos targetPosition){
-//        Chunk targetChunk = targetWorld.getChunk(targetPosition);
-//        BlockPos groundPos = targetPosition.down(1);
-//
-//        if(targetChunk.getBlockState(groundPos).is){};
-//
-//        if(!targetChunk.getBlockState(groundPos).isSideSolid(targetWorld,groundPos, EnumFacing.UP)){
-//            int x = groundPos.getX();
-//            int y = groundPos.getY();
-//            int z = groundPos.getZ();
-//
-//            while (y > 0){
-//                y--;
-//                groundPos = new BlockPos(x,y,z);
-//                if(targetChunk.getBlockState(groundPos).isSideSolid(targetWorld,groundPos,EnumFacing.UP)){
-//                    break;
-//                }
-//                else if(y==0){
-//                    return null;
-//                }
-//            }
-//        }
-//
-//        else{
-//            BlockPos pos1 = new BlockPos(groundPos.getX(), groundPos.getY()+1, groundPos.getZ());
-//            BlockPos pos2 = new BlockPos(groundPos.getX(), groundPos.getY()+2, groundPos.getZ());
-//            if(!targetChunk.getBlockState(pos1).getMaterial().blocksMovement()
-//                    && !targetChunk.getBlockState(pos2).getMaterial().blocksMovement()){
-//                return groundPos.up(1);
-//            }
-//            else return null;
-//        }
-//    }
+
 
     private void createNewTeleportationRequest(EntityPlayer sender, String acceptorPlayerName, boolean toAcceptor) throws TpaException{
         EntityPlayer acceptorPlayer = checkTeleportSendConditionsAndReturnEntityPlayerAcceptor(sender,acceptorPlayerName);

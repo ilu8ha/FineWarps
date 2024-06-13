@@ -13,10 +13,14 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -210,7 +214,6 @@ public class CmdWarp extends CmdBase implements ICommand {
             player.sendMessage(new TextComponentString(TextFormatting.RED + String.format("You can't warp to dimension DIM%s", warp.getDimensionId())));
             return false;
         }
-
         if(ConfigHandler.isVisitedFirstSystemEnabled
                 && ConfigHandler.spawnWorldId != warp.getDimensionId()
                 && !(FineWarps.visitedDimensionData.get(player.getUniqueID().toString()).contains(warp.getDimensionId()))){
@@ -223,7 +226,19 @@ public class CmdWarp extends CmdBase implements ICommand {
             player.sendMessage(new TextComponentString(TextFormatting.RED + String.format("You haven't access to warp %s",warp.getName())));
             return false;
         }
-
+        if(player.dimension != warp.getDimensionId() &&!DimensionManager.isDimensionRegistered(warp.getDimensionId())) {
+            player.sendMessage(new TextComponentString(TextFormatting.RED + String.format("Dimension %s is unreachable",warp.getDimensionId())));
+            return false;
+        }
+        if(ConfigHandler.warpSafetyCheck){
+            BlockPos targetPos = new BlockPos(warp.getPosX(),warp.getPosY(), warp.getPosZ());
+            World targetWorld = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(warp.getDimensionId());
+            Chunk targetChunk = targetWorld.getChunk(targetPos);
+            if(!isWarpPositionSafely(targetChunk,targetPos,targetWorld)){
+                player.sendMessage(new TextComponentString(TextFormatting.RED + String.format("Warp %s position is unsafe", warp.getName())));
+                return false;
+            }
+        }
 
         return true;
     }
@@ -251,6 +266,16 @@ public class CmdWarp extends CmdBase implements ICommand {
         if(FineWarps.isDimensionInBlacklist(player.dimension)){
             player.sendMessage(new TextComponentString(TextFormatting.RED + "You can't create warp in this dimension"));
             return false;
+        }
+        if(ConfigHandler.warpSafetyCheck){
+            World targetWorld = player.world;
+            BlockPos targetPos = player.getPosition();
+            Chunk targetChunk = targetWorld.getChunk(targetPos);
+            if(!isWarpPositionSafely(targetChunk, targetPos, targetWorld)){
+                player.sendMessage(new TextComponentString(TextFormatting.RED + "You cannot create a warp cause position is unsafe. Warp point must be placed on a solid block with two block empty space upside"));
+                return false;
+            }
+
         }
         return true;
     }
@@ -297,16 +322,13 @@ public class CmdWarp extends CmdBase implements ICommand {
     }
 
     private void teleportPlayerToWarp(EntityPlayer player, Warp warp){
-        if(player.dimension != warp.getDimensionId() &&!DimensionManager.isDimensionRegistered(warp.getDimensionId())) {
-            player.sendMessage(new TextComponentString(TextFormatting.RED + String.format("Dimension %s is unreachable",warp.getDimensionId())));
-            return;
-        }
         if(player.dimension != warp.getDimensionId()) {
             EntityHelper.transferPlayerToDimension((EntityPlayerMP) player, warp.getDimensionId(), ((EntityPlayerMP) player).server.getPlayerList());
         }
         player.rotationYaw = warp.getYaw();
         player.rotationPitch = warp.getPitch();
-        player.setPositionAndUpdate(warp.getPosX(),warp.getPosY(),warp.getPosZ());
+        player.fallDistance = 0;
+        player.setPositionAndUpdate(warp.getPosX(),warp.getPosY() + 0.5D,warp.getPosZ());
         warp.Visited();
         if(ConfigHandler.isCooldownSystemEnabled && !hasPermission(player, Permissions.operator)){
             FineWarps.cooldownWarpUse.putIfAbsent(player.getUniqueID().toString(), getCooldownTimerForPlayerStatus(player));
@@ -399,7 +421,11 @@ public class CmdWarp extends CmdBase implements ICommand {
         }
         return null;
     }
-
+    private boolean isWarpPositionSafely(Chunk targetChunk, BlockPos targetPos, World targetWorld){
+        return ((targetChunk.getBlockState(targetPos.down(1)).isSideSolid(targetWorld, targetPos.down(1), EnumFacing.UP))
+                && !(targetChunk.getBlockState(targetPos).getMaterial().blocksMovement())
+                && !(targetChunk.getBlockState(targetPos.up(1)).getMaterial().blocksMovement()));
+    }
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos var4){
         String actionParam, playerParam, warpParam;
@@ -451,5 +477,5 @@ public class CmdWarp extends CmdBase implements ICommand {
             default:
                 return Collections.emptyList();
         }
-    };
+    }
 }

@@ -38,6 +38,8 @@ public class ConfigHandler {
     public static int cooldownTpaSponsor = 0;
     public static int cooldownTpaAdmin = 0;
     public static boolean isSpecialPermissionToTpaNeeded = false;
+    public static boolean warpSafetyCheck = true;
+    public static boolean tpaSafetyCheck = true;
     public static void init(File file){
         config = new Configuration(file);
         config.load();
@@ -69,6 +71,7 @@ public class ConfigHandler {
         spawnWorldId = config.getInt("spawnWorldId", category, 0, -2147483647, 2147483647,"Starting dimensionId. VisitFirstSystem checks are disable for this dimension");
         blacklistedDimension = config.get(category,"List of dimension without being able to warp there",blacklistedDimension).getIntList();
         unavailableWithoutPermissionWarpName = config.get(category,"List of warp names unavailable without operator permission", unavailableWithoutPermissionWarpName).getStringList();
+        warpSafetyCheck = config.getBoolean("warpSafetyCheck", category, true, "Prevent teleporting if warp point on air or or haven't free space for player");
 
         category = "Tpa";
         config.addCustomCategoryComment(category,"Tpa settings");
@@ -77,6 +80,7 @@ public class ConfigHandler {
         isTpaCooldownSystemEnabled = config.getBoolean("isTpaCooldownSystemEnabled", category,false,"Enable/disable tpa cooldown");
         teleportRequestLifetime = config.getInt("teleportRequestLifetime",category, 1200,0,6000,"TeleportRequest lifetime in tick");
         canTpaToBlacklistedDimension = config.getBoolean("canTeleportToBlacklistedDimension", category, false, "Can telepot to player if he is in blacklisted dimension");
+        tpaSafetyCheck = config.getBoolean("tpaSafetyCheck", category, true, "Find safety position (if they not) to teleport if possible or cancel teleportation");
 
         category = "TpaCooldown";
         config.addCustomCategoryComment(category,"Tpa cooldown in tick per player status");

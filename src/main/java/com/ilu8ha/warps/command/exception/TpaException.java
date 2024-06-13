@@ -2,11 +2,8 @@ package com.ilu8ha.warps.command.exception;
 
 import com.ilu8ha.warps.TeleportRequest;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.common.config.Config;
-
 import javax.annotation.Nullable;
+
 
 public class TpaException extends Exception{
     @Nullable
