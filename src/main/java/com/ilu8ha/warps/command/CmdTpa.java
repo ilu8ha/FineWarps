@@ -128,11 +128,9 @@ public class CmdTpa extends CmdBase implements ICommand {
             return;
         }
         if((ConfigHandler.isSpecialPermissionToTpaNeeded
-                    && !hasPermission(request.getAffectedPlayer(), specialPermissionNode + request.getTargetPlayer().dimension)
-                    && !hasPermission(request.getAffectedPlayer(), Permissions.operator))
+                    && !hasPermission(request.getAffectedPlayer(), specialPermissionNode + request.getTargetPlayer().dimension))
                 || (!ConfigHandler.canTpaToBlacklistedDimension
-                    && FineWarps.isDimensionInBlacklist(request.getTargetPlayer().dimension)
-                    && !hasPermission(request.getAffectedPlayer(), Permissions.operator))){
+                    && FineWarps.isDimensionInBlacklist(request.getTargetPlayer().dimension))){
             throw new TpaException(String.format("You can't teleport to DIM%d", request.getTargetPlayer().dimension), request.getAffectedPlayer(), request);
         }
         if(ConfigHandler.isVisitedFirstSystemToTpaEnabled
@@ -143,11 +141,11 @@ public class CmdTpa extends CmdBase implements ICommand {
         }
         if(ConfigHandler.tpaSafetyCheck){
             if(request.isToAcceptor()){
-                if(!hasPermission(request.getPlayerAcceptor(), Permissions.operator) && !request.getPlayerAcceptor().onGround){
+                if(!request.getPlayerAcceptor().onGround){
                     throw new TpaException("You must stay on ground", request.getPlayerAcceptor(), null);
                 }
             }else {
-                if(!hasPermission(request.getPlayerRequester(), Permissions.operator) && !request.getPlayerRequester().onGround){
+                if(!request.getPlayerRequester().onGround){
                     throw new TpaException("You must stay on ground", request.getPlayerRequester(), request);
                 }
             }
