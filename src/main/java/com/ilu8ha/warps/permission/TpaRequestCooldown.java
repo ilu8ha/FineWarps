@@ -11,7 +11,7 @@ public enum TpaRequestCooldown {
     SPONSOR ("fmwarps.tpa.cooldown.sponsor"),
     ADMIN ("fmwarps.tpa.cooldown.admin");
 
-    private String permission;
+    private final String permission;
 
     TpaRequestCooldown(String permission) {
         this.permission = permission;

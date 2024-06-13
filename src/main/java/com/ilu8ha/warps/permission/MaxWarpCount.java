@@ -10,7 +10,7 @@ public enum MaxWarpCount {
     GRAND  ("fmwarps.maxwarp.grand"),
     SPONSOR ("fmwarps.maxwarp.sponsor"),
     ADMIN ("fmwarps.maxwarp.admin");
-    private String permission;
+    private final String permission;
     MaxWarpCount(String permission){
         this.permission = permission;
     }

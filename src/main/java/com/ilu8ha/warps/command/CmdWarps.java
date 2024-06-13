@@ -22,7 +22,7 @@ public class CmdWarps extends CmdBase implements ICommand{
     public void execute(MinecraftServer server, ICommandSender sender, String[] args){
         try {
             List<String> warpList;
-            String playerArg = null;
+            String playerArg;
             Integer dimensionArg = null;
             if(args.length == 0){
                 warpList = getAvailableWarpNames(sender, true);

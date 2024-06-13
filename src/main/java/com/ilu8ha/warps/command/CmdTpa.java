@@ -17,9 +17,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -201,7 +199,7 @@ public class CmdTpa extends CmdBase implements ICommand {
         } else if(hasPermission(player, TpaRequestCooldown.SPONSOR.getPermission())){
             return ConfigHandler.cooldownTpaSponsor;
         } else if (hasPermission(player, TpaRequestCooldown.ADMIN.getPermission())) {
-            return ConfigHandler.cooldownWarpAdmin;
+            return ConfigHandler.cooldownTpaAdmin;
         } else return ConfigHandler.cooldownTpaUser;
     }
 }

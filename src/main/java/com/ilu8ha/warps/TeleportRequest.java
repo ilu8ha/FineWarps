@@ -2,13 +2,9 @@ package com.ilu8ha.warps;
 
 import com.ilu8ha.warps.config.ConfigHandler;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
-
-import java.util.UUID;
 public class TeleportRequest {
     private final EntityPlayer playerRequester;
     private final EntityPlayer playerAcceptor;

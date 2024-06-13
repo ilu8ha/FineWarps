@@ -10,7 +10,7 @@ public enum WarpUseCooldown {
     GRAND  ("fmwarps.cooldown.grand"),
     SPONSOR ("fmwarps.cooldown.sponsor"),
     ADMIN ("fmwarps.cooldown.admin");
-    private String permission;
+    private final String permission;
     WarpUseCooldown(String permission){
         this.permission = permission;
     }

@@ -39,7 +39,6 @@ public class CmdWarp extends CmdBase implements ICommand {
             case (1):
                 if(args[0].equals("help")){
                     sendHelpResult(sender);
-                    return;
                 }else {
                     warpNameParam = args[0];
                     if(!(sender instanceof EntityPlayer)){
@@ -50,10 +49,9 @@ public class CmdWarp extends CmdBase implements ICommand {
                     warp = getWarpIfExistOrGetNull(warpNameParam);
                     if(canTeleport(playerSender, warp)){
                         teleportPlayerToWarp(playerSender,warp);
-
                     }
-                    return;
                 }
+                return;
             case (2):
                 warpNameParam = args[0];
                 actionParam = args[1];

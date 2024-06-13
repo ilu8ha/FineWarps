@@ -3,7 +3,6 @@ package com.ilu8ha.warps.permission;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
-import java.util.Stack;
 
 public class Permissions {
     public static final String warp = "fmwarps.command.warp";
@@ -38,5 +37,6 @@ public class Permissions {
         PermissionAPI.registerNode(teleportRequestDeny, DefaultPermissionLevel.ALL, "Teleport request deny");
         MaxWarpCount.registerPermissions();
         WarpUseCooldown.registerPermission();
+        TpaRequestCooldown.registerPermission();
     }
 }
