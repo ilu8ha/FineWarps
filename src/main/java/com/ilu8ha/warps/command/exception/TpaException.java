@@ -10,16 +10,15 @@ import javax.annotation.Nullable;
 
 public class TpaException extends Exception{
     @Nullable
-    private TeleportRequest teleportRequest;
+    private final TeleportRequest teleportRequest;
 
-    private ICommandSender messageReceiver;
-
-    private boolean needCanceledRequest;
+    private final ICommandSender messageReceiver;
 
 
-    public TpaException(String message, boolean needCanceledRequest, ICommandSender messageReceiver, @Nullable TeleportRequest teleportRequest){
+
+
+    public TpaException(String message, ICommandSender messageReceiver,@Nullable TeleportRequest teleportRequest){
         super(message);
-        this.needCanceledRequest = needCanceledRequest;
         this.messageReceiver = messageReceiver;
         this.teleportRequest = teleportRequest;
     }
@@ -31,9 +30,5 @@ public class TpaException extends Exception{
 
     public ICommandSender getMessageReceiver() {
         return messageReceiver;
-    }
-
-    public boolean isNeedCanceledRequest() {
-        return needCanceledRequest;
     }
 }
