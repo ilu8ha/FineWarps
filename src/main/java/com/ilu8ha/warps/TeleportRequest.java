@@ -56,16 +56,8 @@ public class TeleportRequest {
         timer--;
     }
     public void canceled(){
-        playerAcceptor.sendMessage(new TextComponentString(String.format("%sTeleport request from %s%s%s no longer exists",
-                TextFormatting.GOLD,
-                TextFormatting.AQUA,
-                playerRequester.getName(),
-                TextFormatting.GOLD)));
-        playerRequester.sendMessage(new TextComponentString(String.format("%sTeleport request to %s%s%s no longer exists",
-                TextFormatting.GOLD,
-                TextFormatting.AQUA,
-                playerAcceptor.getName(),
-                TextFormatting.GOLD)));
+        this.canceled(playerRequester);
+        this.canceled(playerAcceptor);
     }
     public void canceled(EntityPlayer player){
         if(playerRequester.equals(player)){

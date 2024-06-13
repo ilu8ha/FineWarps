@@ -132,7 +132,7 @@ public abstract class CmdBase extends CommandBase implements ICommand{
         }
         if(hasPermission(sender, Permissions.operator)){
             if(longNameFormat){
-                return ret.map(warp -> formatWarpName(warp,sender)).collect(Collectors.toList());
+                return ret.map(warp -> formatLongWarpName(warp,sender)).collect(Collectors.toList());
             }
             else {
                 return ret.map(Warp::getName).collect(Collectors.toList());
@@ -150,7 +150,7 @@ public abstract class CmdBase extends CommandBase implements ICommand{
                         || (warp.getInvitedPlayerUUID().contains(((EntityPlayer) sender).getUniqueID().toString())));
             }
             if(longNameFormat){
-                return ret.map(warp -> formatWarpName(warp,sender)).collect(Collectors.toList());
+                return ret.map(warp -> formatLongWarpName(warp,sender)).collect(Collectors.toList());
             }else {
                 return ret.map(Warp::getName).collect(Collectors.toList());
             }
@@ -161,7 +161,7 @@ public abstract class CmdBase extends CommandBase implements ICommand{
     protected List<String> getAvailableWarpNames(ICommandSender sender, boolean longNameFormat) throws CommandException{
         return getAvailableWarpNames(sender, longNameFormat,null,null);
     }
-    private String formatWarpName(Warp warp, ICommandSender sender){
+    private String formatLongWarpName(Warp warp, ICommandSender sender){
         TextFormatting stringColor = TextFormatting.WHITE;
         if(sender instanceof EntityPlayer){
             String playerUUID = ((EntityPlayer)sender).getUniqueID().toString();
