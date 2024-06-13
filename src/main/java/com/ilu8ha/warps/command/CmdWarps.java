@@ -11,11 +11,12 @@ import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.cli.*;
 import org.apache.logging.log4j.Level;
 
+import java.util.Collections;
 import java.util.List;
 
 public class CmdWarps extends CmdBase implements ICommand{
     public CmdWarps(){
-        super("warps", Permissions.warps,0);
+        super("finewarps:warps", Permissions.warps,0);
     }
 
     @Override
@@ -68,6 +69,11 @@ public class CmdWarps extends CmdBase implements ICommand{
                 exception.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public List<String> getAliases() {
+        return Collections.singletonList("warps");
     }
 }
 

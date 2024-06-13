@@ -26,7 +26,8 @@ import java.util.stream.Collectors;
 
 
 public class CmdTpa extends CmdBase implements ICommand {
-    public CmdTpa() {super("tpa", Permissions.teleportRequest, 0);}
+    public CmdTpa() {super("finewarps:teleportrequest", Permissions.teleportRequest, 0);}
+
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args){
         try {
@@ -201,6 +202,11 @@ public class CmdTpa extends CmdBase implements ICommand {
         } else if (hasPermission(player, TpaRequestCooldown.ADMIN.getPermission())) {
             return ConfigHandler.cooldownTpaAdmin;
         } else return ConfigHandler.cooldownTpaUser;
+    }
+
+    @Override
+    public List<String> getAliases() {
+        return Arrays.asList("tpa", "tr");
     }
 }
 

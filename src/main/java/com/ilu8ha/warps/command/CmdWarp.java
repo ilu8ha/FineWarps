@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 
 public class CmdWarp extends CmdBase implements ICommand {
     public CmdWarp(){
-        super("warp",Permissions.warp,0);
+        super("finewarps:warp",Permissions.warp,0);
     }
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
@@ -475,5 +475,9 @@ public class CmdWarp extends CmdBase implements ICommand {
             default:
                 return Collections.emptyList();
         }
+    }
+    @Override
+    public List<String> getAliases() {
+        return Collections.singletonList("warp");
     }
 }
