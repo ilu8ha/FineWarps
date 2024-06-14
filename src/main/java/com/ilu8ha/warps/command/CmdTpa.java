@@ -5,8 +5,8 @@ import com.ilu8ha.warps.FineWarps;
 import com.ilu8ha.warps.TeleportRequest;
 import com.ilu8ha.warps.command.exception.TpaException;
 import com.ilu8ha.warps.config.ConfigHandler;
+import com.ilu8ha.warps.permission.CustomStatus;
 import com.ilu8ha.warps.permission.Permissions;
-import com.ilu8ha.warps.permission.TpaRequestCooldown;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -189,19 +189,12 @@ public class CmdTpa extends CmdBase implements ICommand {
     }
 
     private int getTpaCooldownTimerForPlayerStatus(EntityPlayer player){
-        if(hasPermission(player, TpaRequestCooldown.USER.getPermission())){
-            return ConfigHandler.cooldownTpaUser;
-        }else if(hasPermission(player,TpaRequestCooldown.VIP.getPermission())){
-            return ConfigHandler.cooldownTpaVip;
-        } else if (hasPermission(player, TpaRequestCooldown.PREMIUM.getPermission())) {
-            return ConfigHandler.cooldownTpaPremium;
-        } else if (hasPermission(player, TpaRequestCooldown.GRAND.getPermission())) {
-            return ConfigHandler.cooldownTpaGrand;
-        } else if(hasPermission(player, TpaRequestCooldown.SPONSOR.getPermission())){
-            return ConfigHandler.cooldownTpaSponsor;
-        } else if (hasPermission(player, TpaRequestCooldown.ADMIN.getPermission())) {
-            return ConfigHandler.cooldownTpaAdmin;
-        } else return ConfigHandler.cooldownTpaUser;
+        for(CustomStatus status : CustomStatus.statusList){
+            if(hasPermission(player,status.getPermissionNode())){
+                return status.getTpaCooldown();
+            }
+        }
+        return ConfigHandler.defaultTpaCooldown;
     }
 
     @Override

@@ -5,9 +5,8 @@ import com.ilu8ha.warps.DataFileManager;
 import com.ilu8ha.warps.FineWarps;
 import com.ilu8ha.warps.Warp;
 import com.ilu8ha.warps.config.ConfigHandler;
-import com.ilu8ha.warps.permission.MaxWarpCount;
+import com.ilu8ha.warps.permission.CustomStatus;
 import com.ilu8ha.warps.permission.Permissions;
-import com.ilu8ha.warps.permission.WarpUseCooldown;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -282,19 +281,12 @@ public class CmdWarp extends CmdBase implements ICommand {
     }
 
     private int getMaxWarpCountForPlayerStatus(EntityPlayer player){
-        if(hasPermission(player, MaxWarpCount.USER.getPermission())){
-            return ConfigHandler.maxWarpCountUser;
-        }else if(hasPermission(player, MaxWarpCount.VIP.getPermission())){
-            return ConfigHandler.maxWarpCountVip;
-        } else if (hasPermission(player, MaxWarpCount.PREMIUM.getPermission())) {
-            return ConfigHandler.maxWarpCountPremium;
-        } else if (hasPermission(player, MaxWarpCount.GRAND.getPermission())) {
-            return ConfigHandler.maxWarpCountGrand;
-        } else if (hasPermission(player,MaxWarpCount.SPONSOR.getPermission())) {
-            return ConfigHandler.maxWarpCountSponsor;
-        } else if (hasPermission(player, MaxWarpCount.ADMIN.getPermission())) {
-            return ConfigHandler.maxWarpCountAdmin;
-        } else return ConfigHandler.maxWarpCountUser;
+        for(CustomStatus status : CustomStatus.statusList){
+            if(hasPermission(player,status.getPermissionNode())){
+                return status.getMaxWarpCount();
+            }
+        }
+        return ConfigHandler.defaultMaxWarp;
     }
     private boolean hasUnusedWarp(EntityPlayer player){
         int playerMaxWarpCount = getMaxWarpCountForPlayerStatus(player);
@@ -307,19 +299,12 @@ public class CmdWarp extends CmdBase implements ICommand {
     }
 
     private int getCooldownTimerForPlayerStatus(EntityPlayer player) {
-        if(hasPermission(player, WarpUseCooldown.USER.getPermission())){
-            return ConfigHandler.cooldownWarpUser;
-        }else if(hasPermission(player,WarpUseCooldown.VIP.getPermission())){
-            return ConfigHandler.cooldownWarpVip;
-        } else if (hasPermission(player, WarpUseCooldown.PREMIUM.getPermission())) {
-            return ConfigHandler.cooldownWarpPremium;
-        } else if (hasPermission(player, WarpUseCooldown.GRAND.getPermission())) {
-            return ConfigHandler.cooldownWarpGrand;
-        } else if(hasPermission(player, WarpUseCooldown.SPONSOR.getPermission())){
-            return ConfigHandler.cooldownWarpSponsor;
-        } else if (hasPermission(player, WarpUseCooldown.ADMIN.getPermission())) {
-            return ConfigHandler.cooldownWarpAdmin;
-        } else return ConfigHandler.cooldownWarpUser;
+        for(CustomStatus status : CustomStatus.statusList){
+            if(hasPermission(player,status.getPermissionNode())){
+                return status.getWarpCooldown();
+            }
+        }
+        return ConfigHandler.defaultWarpCooldown;
     }
 
     private void teleportPlayerToWarp(EntityPlayer player, Warp warp){

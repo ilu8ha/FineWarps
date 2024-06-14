@@ -5,9 +5,9 @@ import net.minecraftforge.server.permission.PermissionAPI;
 
 
 public class Permissions {
-    public static final String warp = "fmwarps.command.warp";
-    public static final String warps = "fmwarps.command.warps";
-    public static final String teleportRequest = "fmwarps.command.tpa";
+    public static final String warp = "fmwarps.command.finewarps:warp";
+    public static final String warps = "fmwarps.command.finewarps:warps";
+    public static final String teleportRequest = "fmwarps.command.finewarps:teleportrequest";
     public static final String operator = "fmwarps.operator";
     public static final String warpSet = "fmwarps.warp.set";
     public static final String warpUpdate = "fmwarps.warp.update";
@@ -35,8 +35,7 @@ public class Permissions {
         PermissionAPI.registerNode(teleportRequestSend, DefaultPermissionLevel.ALL, "Teleport request send");
         PermissionAPI.registerNode(teleportRequestAccept, DefaultPermissionLevel.ALL, "Teleport request accept");
         PermissionAPI.registerNode(teleportRequestDeny, DefaultPermissionLevel.ALL, "Teleport request deny");
-        MaxWarpCount.registerPermissions();
-        WarpUseCooldown.registerPermission();
-        TpaRequestCooldown.registerPermission();
+
+        CustomStatus.registerStatusPermission();
     }
 }

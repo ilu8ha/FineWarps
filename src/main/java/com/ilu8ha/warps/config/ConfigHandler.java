@@ -1,26 +1,17 @@
 package com.ilu8ha.warps.config;
 
 import com.ilu8ha.warps.FineWarps;
+import com.ilu8ha.warps.permission.CustomStatus;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-
+import org.apache.logging.log4j.Level;
 import java.io.File;
+
+
 
 public class ConfigHandler {
     public static File configFile;
     public static Configuration config;
-    public static int maxWarpCountUser = 0;
-    public static int maxWarpCountVip = 0;
-    public static int maxWarpCountPremium = 0;
-    public static int maxWarpCountGrand = 0;
-    public static int maxWarpCountSponsor = 0;
-    public static int maxWarpCountAdmin = 999;
-    public static int cooldownWarpUser = 0;
-    public static int cooldownWarpVip = 0;
-    public static int cooldownWarpPremium = 0;
-    public static int cooldownWarpGrand = 0;
-    public static int cooldownWarpSponsor = 0;
-    public static int cooldownWarpAdmin = 0;
     public static boolean isCooldownSystemEnabled = false;
     public static boolean isVisitedFirstSystemEnabled = false;
     public static boolean isSpecialPermissionNeeded = false;
@@ -31,37 +22,22 @@ public class ConfigHandler {
     public static boolean isTpaCooldownSystemEnabled = false;
     public static int teleportRequestLifetime = 1200;
     public static boolean canTpaToBlacklistedDimension = false;
-    public static int cooldownTpaUser = 0;
-    public static int cooldownTpaVip = 0;
-    public static int cooldownTpaPremium = 0;
-    public static int cooldownTpaGrand = 0;
-    public static int cooldownTpaSponsor = 0;
-    public static int cooldownTpaAdmin = 0;
     public static boolean isSpecialPermissionToTpaNeeded = false;
     public static boolean warpSafetyCheck = true;
     public static boolean tpaSafetyCheck = true;
+    public static int defaultMaxWarp = 1;
+    public static int defaultTpaCooldown = 1600;
+    public static int defaultWarpCooldown = 1600;
+    public static boolean isCustomStatusesEnabled = false;
+    private static String [] customStatuses = new String[]{};
+    private static String [] customStatusesMaxWarp = new String[]{};
+    private static String [] customStatusesWarpCooldown = new String[]{};
+    private static String [] customStatusesTpaCooldown = new String[]{};
+
     public static void init(File file){
         config = new Configuration(file);
         config.load();
         String category;
-
-        category = "MaxWarpCount";
-        config.addCustomCategoryComment(category,"Maximum warps per player status");
-        maxWarpCountUser = config.getInt("maxWarpCountUser",category,0,0,999,"Maximum warps count for user");
-        maxWarpCountVip = config.getInt("maxWarpCountVip",category,0,0,999,"Maximum warps count for VIP");
-        maxWarpCountPremium = config.getInt("maxWarpCountPremium",category,0,0,999,"Maximum warps count for Premium");
-        maxWarpCountGrand = config.getInt("maxWarpCountGrand",category,0,0,999,"Maximum warps count for Grand");
-        maxWarpCountSponsor = config.getInt("maxWarpCountSponsor",category,0,0,999,"Maximum warps count for Sponsor");
-        maxWarpCountAdmin = config.getInt("maxWarpCountAdmin",category,0,0,999,"Maximum warps count for Admin");
-
-        category = "WarpUseCooldown";
-        config.addCustomCategoryComment(category,"Warp cooldown in tick per player status");
-        cooldownWarpUser = config.getInt("cooldownWarpUser", category, 0,0, 2147483647,"Cooldown in tick for user");
-        cooldownWarpVip = config.getInt("cooldownWarpVip", category, 0,0, 2147483647,"Cooldown in tick for VIP");
-        cooldownWarpPremium = config.getInt("cooldownWarpPremium", category, 0,0, 2147483647,"Cooldown in tick for Premium");
-        cooldownWarpGrand = config.getInt("cooldownWarpGrand", category, 0,0, 2147483647,"Cooldown in tick for Grand");
-        cooldownWarpSponsor = config.getInt("cooldownWarpSponsor", category, 0,0, 2147483647,"Cooldown in tick for Sponsor");
-        cooldownWarpAdmin = config.getInt("cooldownWarpAdmin", category, 0,0, 2147483647,"Cooldown in tick for Admin");
 
         category = "General";
         config.addCustomCategoryComment("General","General settings");
@@ -72,6 +48,8 @@ public class ConfigHandler {
         blacklistedDimension = config.get(category,"List of dimension without being able to warp there",blacklistedDimension).getIntList();
         unavailableWithoutPermissionWarpName = config.get(category,"List of warp names unavailable without operator permission", unavailableWithoutPermissionWarpName).getStringList();
         warpSafetyCheck = config.getBoolean("warpSafetyCheck", category, true, "Prevent teleporting if warp point on air or or haven't free space for player");
+        defaultMaxWarp = config.getInt("defaultMaxWarp", category, 1, 0,2147483647, "Maximum warp count per player by default");
+        defaultWarpCooldown = config.getInt("defaultWarpCooldown", category,1600,0,2147483647, "Default cooldown between teleporting on warp point");
 
         category = "Tpa";
         config.addCustomCategoryComment(category,"Tpa settings");
@@ -81,15 +59,17 @@ public class ConfigHandler {
         teleportRequestLifetime = config.getInt("teleportRequestLifetime",category, 1200,0,6000,"TeleportRequest lifetime in tick");
         canTpaToBlacklistedDimension = config.getBoolean("canTeleportToBlacklistedDimension", category, false, "Can telepot to player if he is in blacklisted dimension");
         tpaSafetyCheck = config.getBoolean("tpaSafetyCheck", category, true, "Teleportation is possible only then target player stay on ground");
+        defaultTpaCooldown = config.getInt("defaultTpaCooldown", category,1600,0,2147483647, "Default cooldown between sending a new teleport request");
 
-        category = "TpaCooldown";
-        config.addCustomCategoryComment(category,"Tpa cooldown in tick per player status");
-        cooldownTpaUser = config.getInt("cooldownTpaUser", category, 0, 0, 2147483647, "Tpa cooldown in tick for user");
-        cooldownTpaVip = config.getInt("cooldownTpaVip", category, 0, 0, 2147483647, "Tpa cooldown in tick for VIP");
-        cooldownTpaPremium = config.getInt("cooldownTpaPremium", category, 0, 0, 2147483647, "Tpa cooldown in tick for Premium");
-        cooldownTpaGrand = config.getInt("cooldownTpaGrand", category, 0, 0, 2147483647, "Tpa cooldown in tick for Grand");
-        cooldownTpaSponsor = config.getInt("cooldownTpaSponsor", category, 0, 0, 2147483647, "Tpa cooldown in tick for Sponsor");
-        cooldownTpaAdmin = config.getInt("cooldownTpaAdmin", category, 0, 0, 2147483647, "Tpa cooldown in tick for Admin");
+
+        category = "CustomStatus";
+        config.addCustomCategoryComment(category, "Custom Statuses module.");
+        isCustomStatusesEnabled = config.getBoolean("isCustomStatusesEnabled", category, false, "Is custom statuses module enabled. Have no reason to enable it with default forge permissionHandler");
+        customStatuses = config.get(category, "List of custom statusNames, case insensitive. Each status will have its own permission registered, permission format fmwarps.playerstatus.[statusName]", customStatuses).getStringList();
+        customStatusesMaxWarp = config.get(category, "Maximum warp point for status owner. Format [statusName(case insensitive)]:[number(must be positive)]", customStatusesMaxWarp).getStringList();
+        customStatusesWarpCooldown = config.get(category, "Cooldown between teleporting on warp point for status owner. Format [statusName(case insensitive)]:[number in tick(must be positive)]", customStatusesWarpCooldown).getStringList();
+        customStatusesTpaCooldown = config.get(category, "Cooldown between sending a new teleport request for status owner. Format [statusName(case insensitive)]:[number in tick(must be positive)]", customStatusesTpaCooldown).getStringList();
+        registerCustomStatus();
 
         config.save();
     }
@@ -97,5 +77,57 @@ public class ConfigHandler {
     public static void registerConfig(FMLPreInitializationEvent event){
         configFile = new File(String.valueOf(event.getModConfigurationDirectory()));
         init(new File(configFile.getPath(), FineWarps.MODID + ".cfg"));
+    }
+
+    private static void registerCustomStatus(){
+        if(isCustomStatusesEnabled){
+            for(String statusName : customStatuses){
+                if(CustomStatus.statusList.stream().noneMatch(i->i.getStatusName().equals(statusName.toLowerCase()))){
+                    new CustomStatus(statusName.toLowerCase());
+                }
+            }
+
+            for(String str : customStatusesMaxWarp){
+                if(str.matches("^\\w+:(0|[1-9]\\d*)$")){
+                    try{
+                        String[] parts = str.split(":");
+                        String statusName = parts[0];
+                        int property = Integer.parseInt(parts[1]);
+                        CustomStatus status = CustomStatus.statusList.stream().filter(i->i.getStatusName().equals(statusName.toLowerCase())).findAny().orElse(null);
+                        if(status!=null){
+                            status.setWarpCount(property);
+                            FineWarps.logger.log(Level.DEBUG, String.format("Maximum warp for status %s set to %d",statusName, property));
+                        }
+                    }catch (NumberFormatException exception)
+                    {
+
+                    }
+                }
+            }
+            for(String str : customStatusesWarpCooldown){
+                if(str.matches("^\\w+:(0|[1-9]\\d*)$")){
+                    String[] parts = str.split(":");
+                    String statusName = parts[0];
+                    int property = Integer.parseInt(parts[1]);
+                    CustomStatus status = CustomStatus.statusList.stream().filter(i->i.getStatusName().equals(statusName.toLowerCase())).findAny().orElse(null);
+                    if(status!=null){
+                        status.setWarpCooldown(property);
+                        FineWarps.logger.log(Level.DEBUG, String.format("Warp cooldown for status %s set to %d",statusName, property));
+                    }
+                }
+            }
+            for(String str : customStatusesTpaCooldown){
+                if(str.matches("^\\w+:(0|[1-9]\\d*)$")){
+                    String[] parts = str.split(":");
+                    String statusName = parts[0];
+                    int property = Integer.parseInt(parts[1]);
+                    CustomStatus status = CustomStatus.statusList.stream().filter(i->i.getStatusName().equals(statusName.toLowerCase())).findAny().orElse(null);
+                    if(status!=null){
+                        status.setTpaCooldown(property);
+                        FineWarps.logger.log(Level.DEBUG, String.format("Tpa cooldown for status %s set to %d",statusName, property));
+                    }
+                }
+            }
+        }
     }
 }
